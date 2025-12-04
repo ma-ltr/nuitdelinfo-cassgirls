@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sauve-Moi – L'Odyssée d'un PC Résistant | NIRD</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- Écran de titre -->
+        <div id="title-screen" class="screen">
+            <h1>💻 SAUVE-MOI 💻</h1>
+            <h2>L'Odyssée d'un PC Résistant</h2>
+            <p>Un jeu narratif pour découvrir comment éviter l'obsolescence programmée avec la démarche <strong>NIRD</strong></p>
+            <button id="start-btn" onclick="startGame()">COMMENCER L'AVENTURE</button>
+            <div class="credits">
+                <p>Créé pour la Nuit de l'Info 2025 • Sujet : Le Village Numérique Résistant</p>
+                <p>Licence libre - Ressources libres de droits</p>
+            </div>
+        </div>
+
+        <!-- Écran du jeu -->
+        <div id="game-screen" class="screen hidden">
+            <!-- Fond d'écran dynamique -->
+            <div id="background"></div>
+            
+            <!-- Personnage affiché -->
+            <div id="character">💻</div>
+            
+            <!-- Boîte de dialogue -->
+            <div id="dialog-box">
+                <div id="character-name">PC Vieux mais Sage</div>
+                
+                <!-- Contenu avec scroll si nécessaire -->
+                <div id="text-container">
+                    <p id="dialog-text">Chargement de l'histoire...</p>
+                </div>
+                
+                <!-- Boutons de choix -->
+                <div id="choices-container"></div>
+                
+                <!-- Indicateur de progression -->
+                <div id="progress">
+                    <button id="back-btn">← Retour</button>
+                    <div id="stats">
+                        <div class="stat">
+                            <span>Autonomie</span>
+                            <progress id="autonomy" value="30" max="100"></progress>
+                        </div>
+                        <div class="stat">
+                            <span>Durabilité</span>
+                            <progress id="durability" value="30" max="100"></progress>
+                        </div>
+                        <div class="stat">
+                            <span>Inclusion</span>
+                            <progress id="inclusion" value="30" max="100"></progress>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Écran de fin -->
+        <div id="end-screen" class="screen hidden">
+            <h1 id="end-title">Fin de l'aventure</h1>
+            <div id="end-content"></div>
+            <button id="restart-btn" onclick="restartGame()">Rejouer</button>
+            <div id="nird-links">
+                <p>Pour en savoir plus sur la démarche NIRD :</p>
+                <a href="https://nird.forge.apps.education.fr/" target="_blank">Site officiel NIRD</a>
+                <a href="https://www.cafepedagogique.net/2025/04/27/bruay-labuissiere-voyage-au-centre-du-libre-educatif/" target="_blank">Article Café Pédagogique</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
