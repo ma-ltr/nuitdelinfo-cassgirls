@@ -3,6 +3,30 @@ document.addEventListener('DOMContentLoaded', function() {
     const existingKeyboards = document.querySelectorAll('#letters-only-keyboard, #virtual-keyboard');
     existingKeyboards.forEach(kb => kb.remove());
     
+    // SUPPRIMER LE CHAMP MOT DE PASSE
+    const passwordField = document.querySelector('input[type="password"]');
+    if (passwordField) {
+        const passwordRow = passwordField.closest('tr');
+        if (passwordRow) {
+            passwordRow.remove();
+        }
+    }
+    
+    // MODIFIER LA TABLE POUR N'AVOIR QUE LE NOM
+    const table = document.querySelector('table');
+    if (table) {
+        table.innerHTML = `
+            <tr>
+                <th>Champ</th>
+                <th>À remplir</th>
+            </tr>
+            <tr>
+                <td><label for="name">Nom</label></td>
+                <td><input type="text" name="name" id="name" readonly/></td>
+            </tr>
+        `;
+    }
+    
     // Création du conteneur principal
     const lettersContainer = document.createElement('div');
     lettersContainer.id = 'letters-only-keyboard';
@@ -24,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
         user-select: none;
     `;
     
-    // Configuration des niveaux - VITESSE AUGMENTÉE
+    // Configuration des niveaux
     const levelsConfig = {
         startSpeed: 0.8,
         speedIncrement: 0.6,
@@ -149,16 +173,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 e.preventDefault();
                 e.stopPropagation();
                 
-                // Rétablir le focus si nécessaire
-                if (!activeField && lastActiveField) {
-                    lastActiveField.focus();
-                    activeField = lastActiveField;
+                // AUTO-FOCUS sur le champ si pas déjà fait
+                if (!activeField) {
+                    const nameField = document.getElementById('name');
+                    if (nameField) {
+                        nameField.focus();
+                        activeField = nameField;
+                        lastActiveField = nameField;
+                        updateFieldStyle(nameField, true);
+                        updateLevelDisplay();
+                    }
                 }
                 
                 const letter = this.dataset.letter;
                 
-                // Insérer la lettre (false = pas une suppression)
-                if (insertLetterIntoActiveField(letter, false)) {
+                // Insérer la lettre
+                if (insertLetterIntoActiveField(letter)) {
                     // Animation de clic réussie
                     this.style.background = '#00ff00';
                     this.style.color = '#000000';
@@ -476,8 +506,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 🪳 Cafards: ${cockroachCount}
             </div>
             <div style="font-size: 12px; margin-top: 8px; opacity: 0.9;">
-                <span style="color: ${activeField ? '#00ff00' : '#ff9900'};">
-                    ${activeField ? '✓ CHAMP ACTIF' : '⚠️ CLIQUEZ SUR UN CHAMP'}
+                <span style="color: #00ff00; font-weight: bold;">
+                    ✓ CHAMP AUTO-ACTIVÉ
                 </span>
             </div>
         `;
@@ -508,15 +538,95 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Insérer dans la page
-    const table = document.querySelector('table');
     if (table) {
         table.insertAdjacentElement('afterend', lettersContainer);
     } else {
         document.body.appendChild(lettersContainer);
     }
     
-    // Gestion des champs
-    const inputFields = document.querySelectorAll('input');
+    // Gestion du champ - EMPÊCHER L'ÉCRITURE DIRECTE
+    const nameField = document.getElementById('name');
+    
+    // Rendre le champ read-only et empêcher toutes les interactions
+    if (nameField) {
+        nameField.readOnly = true;
+        nameField.style.cssText += `
+            transition: all 0.3s;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid #cbd5e0;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+            background: #f8f9fa;
+            position: relative;
+            cursor: default;
+            user-select: none;
+        `;
+        
+        // EMPÊCHER TOUTES LES INTERACTIONS CLAVIER
+        nameField.addEventListener('keydown', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        });
+        
+        nameField.addEventListener('keypress', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        });
+        
+        nameField.addEventListener('keyup', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        });
+        
+        nameField.addEventListener('input', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        });
+        
+        nameField.addEventListener('paste', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        });
+        
+        nameField.addEventListener('cut', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        });
+        
+        nameField.addEventListener('copy', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        });
+        
+        // AUTO-FOCUS au démarrage
+        setTimeout(() => {
+            nameField.focus();
+            activeField = nameField;
+            lastActiveField = nameField;
+            updateFieldStyle(nameField, true);
+            updateLevelDisplay();
+        }, 100);
+        
+        // Gestion du focus
+        nameField.addEventListener('focus', function() {
+            activeField = this;
+            lastActiveField = this;
+            updateFieldStyle(this, true);
+        });
+        
+        nameField.addEventListener('blur', function() {
+            updateFieldStyle(this, false);
+        });
+    }
     
     function updateFieldStyle(field, isActive) {
         if (isActive) {
@@ -532,33 +642,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    inputFields.forEach(input => {
-        input.style.cssText += `
-            transition: all 0.3s;
-            padding: 12px;
-            border-radius: 8px;
-            border: 2px solid #cbd5e0;
-            font-size: 16px;
-            width: 100%;
-            box-sizing: border-box;
-            background: #f8f9fa;
-            position: relative;
-        `;
-        
-        input.addEventListener('focus', function() {
-            activeField = this;
-            lastActiveField = this;
-            inputFields.forEach(field => {
-                updateFieldStyle(field, field === this);
-            });
-            updateLevelDisplay();
-        });
-        
-        input.addEventListener('blur', function() {
-            updateFieldStyle(this, false);
-        });
-    });
-    
     lettersContainer.addEventListener('mousedown', function(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -573,12 +656,22 @@ document.addEventListener('DOMContentLoaded', function() {
         return false;
     });
     
-    // FONCTION MODIFIÉE POUR GÉRER LA SUPPRESSION
+    // Fonction pour insérer une lettre
     function insertLetterIntoActiveField(letter, isDeletion = false) {
         const targetField = activeField || lastActiveField;
         
         if (!targetField) {
-            showNotification('⚠️ Sélectionnez d\'abord un champ !', 'error');
+            // Auto-activation si pas de champ actif
+            const nameField = document.getElementById('name');
+            if (nameField) {
+                nameField.focus();
+                activeField = nameField;
+                lastActiveField = nameField;
+                updateFieldStyle(nameField, true);
+                updateLevelDisplay();
+                showNotification('Champ auto-activé !', 'info');
+                return insertLetterIntoActiveField(letter, isDeletion); // Réessayer
+            }
             return false;
         }
         
@@ -587,18 +680,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 targetField.focus();
             }
             
-            const start = targetField.selectionStart;
-            const end = targetField.selectionEnd;
             const currentValue = targetField.value;
             
             // CAS NORMAL : Insertion d'une lettre
             if (!isDeletion) {
-                targetField.value = currentValue.substring(0, start) + letter + currentValue.substring(end);
+                // Ajouter à la fin
+                targetField.value = currentValue + letter;
                 
-                const newPosition = start + 1;
                 setTimeout(() => {
                     if (targetField) {
-                        targetField.setSelectionRange(newPosition, newPosition);
                         targetField.focus();
                         activeField = targetField;
                         lastActiveField = targetField;
@@ -619,24 +709,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 return true;
                 
             } 
-            // CAS SUPPRESSION : Effacer une lettre
+            // CAS SUPPRESSION : Effacer la dernière lettre
             else {
                 // Vérifier qu'il y a quelque chose à supprimer
-                if (start === end && start > 0) {
-                    // Supprimer la lettre avant le curseur
-                    targetField.value = currentValue.substring(0, start - 1) + currentValue.substring(end);
+                if (currentValue.length > 0) {
+                    // Supprimer la dernière lettre
+                    targetField.value = currentValue.substring(0, currentValue.length - 1);
                     
-                    const newPosition = start - 1;
                     setTimeout(() => {
                         if (targetField) {
-                            targetField.setSelectionRange(newPosition, newPosition);
                             targetField.focus();
                             activeField = targetField;
                             lastActiveField = targetField;
                         }
                     }, 10);
                     
-                    // REVENIR AU NIVEAU PRÉCÉDENT
+                    // REVENIR AU NIVEAU PRÉCÉDENT (si pas déjà au niveau 1)
                     if (currentLevel > 1) {
                         currentLevel--;
                         
@@ -663,58 +751,9 @@ document.addEventListener('DOMContentLoaded', function() {
                             }
                         }
                         
-                        showNotification(`↩️ Retour au niveau ${currentLevel}`, 'info');
+                        showNotification(`↩️ Lettre supprimée - Retour au niveau ${currentLevel}`, 'info');
                     } else {
-                        showNotification('Déjà au niveau minimum', 'info');
-                    }
-                    
-                    updateFieldStyle(targetField, true);
-                    
-                    const inputEvent = new Event('input', { bubbles: true });
-                    targetField.dispatchEvent(inputEvent);
-                    
-                    return true;
-                } else if (start !== end) {
-                    // Supprimer la sélection
-                    targetField.value = currentValue.substring(0, start) + currentValue.substring(end);
-                    
-                    setTimeout(() => {
-                        if (targetField) {
-                            targetField.setSelectionRange(start, start);
-                            targetField.focus();
-                            activeField = targetField;
-                            lastActiveField = targetField;
-                        }
-                    }, 10);
-                    
-                    // REVENIR AU NIVEAU PRÉCÉDENT
-                    if (currentLevel > 1) {
-                        currentLevel--;
-                        
-                        // Réduire la vitesse
-                        currentSpeed = Math.max(
-                            levelsConfig.startSpeed,
-                            currentSpeed / (1 + (levelsConfig.speedIncrement * 0.1 * (currentLevel + 1)))
-                        );
-                        
-                        // Arrêter l'animation actuelle
-                        if (animationId) {
-                            cancelAnimationFrame(animationId);
-                        }
-                        
-                        // Recréer le niveau précédent
-                        createLevel(currentLevel);
-                        updateLevelDisplay();
-                        
-                        // Redémarrer l'animation
-                        if (isMoving) {
-                            animateLetters();
-                            if (currentLevel >= 2) {
-                                animateCockroaches();
-                            }
-                        }
-                        
-                        showNotification(`↩️ Retour au niveau ${currentLevel}`, 'info');
+                        showNotification('Lettre supprimée (déjà au niveau minimum)', 'info');
                     }
                     
                     updateFieldStyle(targetField, true);
@@ -735,28 +774,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return false;
         }
     }
-    
-    // Détecter la suppression avec Backspace ou Delete
-    document.addEventListener('keydown', function(e) {
-        const targetField = activeField || lastActiveField;
-        
-        if (!targetField || document.activeElement !== targetField) {
-            return;
-        }
-        
-        // Backspace (8) ou Delete (46)
-        if (e.keyCode === 8 || e.keyCode === 46 || e.key === 'Backspace' || e.key === 'Delete') {
-            e.preventDefault();
-            
-            const start = targetField.selectionStart;
-            const end = targetField.selectionEnd;
-            const value = targetField.value;
-            
-            if (start !== end || (start === end && start > 0)) {
-                insertLetterIntoActiveField('', true);
-            }
-        }
-    });
     
     function showNotification(message, type) {
         const oldNotification = document.getElementById('letter-notification');
@@ -797,7 +814,7 @@ document.addEventListener('DOMContentLoaded', function() {
     updateLevelDisplay();
     animateLetters();
     
-    // Contrôles
+    // Contrôles (SANS "FORCER LE FOCUS")
     const controlsContainer = document.createElement('div');
     controlsContainer.style.cssText = `
         display: flex;
@@ -806,33 +823,6 @@ document.addEventListener('DOMContentLoaded', function() {
         margin: 20px 0;
         flex-wrap: wrap;
     `;
-    
-    const forceFocusButton = document.createElement('button');
-    forceFocusButton.textContent = '🎯 FORCER LE FOCUS';
-    forceFocusButton.style.cssText = `
-        padding: 12px 24px;
-        background: linear-gradient(90deg, #00b894, #00a085);
-        color: white;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 16px;
-        font-weight: bold;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        transition: all 0.3s;
-    `;
-    
-    forceFocusButton.addEventListener('click', function() {
-        const firstInput = document.querySelector('input[type="text"]');
-        if (firstInput) {
-            firstInput.focus();
-            activeField = firstInput;
-            lastActiveField = firstInput;
-            updateFieldStyle(firstInput, true);
-            updateLevelDisplay();
-            showNotification('Focus sur le champ "Nom" !', 'success');
-        }
-    });
     
     const toggleButton = document.createElement('button');
     toggleButton.textContent = '⏸️ Pause';
@@ -864,7 +854,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // BOUTON SUPPRESSION AJOUTÉ
+    // BOUTON SUPPRESSION
     const deleteButton = document.createElement('button');
     deleteButton.textContent = '⌫ Supprimer lettre';
     deleteButton.style.cssText = `
@@ -882,6 +872,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     deleteButton.addEventListener('click', function() {
         if (insertLetterIntoActiveField('', true)) {
+            // Animation du bouton
             this.style.transform = 'scale(0.95)';
             setTimeout(() => {
                 this.style.transform = 'scale(1)';
@@ -911,6 +902,12 @@ document.addEventListener('DOMContentLoaded', function() {
         toggleButton.textContent = '⏸️ Pause';
         toggleButton.style.background = 'linear-gradient(90deg, #4a5568, #2d3748)';
         
+        // Vider le champ
+        const nameField = document.getElementById('name');
+        if (nameField) {
+            nameField.value = '';
+        }
+        
         if (animationId) {
             cancelAnimationFrame(animationId);
         }
@@ -919,26 +916,130 @@ document.addEventListener('DOMContentLoaded', function() {
         updateLevelDisplay();
         animateLetters();
         
-        const firstInput = document.querySelector('input[type="text"]');
-        if (firstInput) {
+        if (nameField) {
             setTimeout(() => {
-                firstInput.focus();
-                activeField = firstInput;
-                lastActiveField = firstInput;
-                updateFieldStyle(firstInput, true);
+                nameField.focus();
+                activeField = nameField;
+                lastActiveField = nameField;
+                updateFieldStyle(nameField, true);
             }, 100);
         }
         
-        showNotification('Jeu réinitialisé !', 'info');
+        showNotification('Jeu réinitialisé ! Champ vidé.', 'info');
     });
     
-    controlsContainer.appendChild(forceFocusButton);
+    // BOUTON VALIDER
+    const validateButton = document.createElement('button');
+    validateButton.textContent = '✅ Valider le formulaire';
+    validateButton.style.cssText = `
+        padding: 12px 24px;
+        background: linear-gradient(90deg, #48bb78, #38a169);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        transition: all 0.3s;
+    `;
+    
+    validateButton.addEventListener('click', function() {
+        const nameField = document.getElementById('name');
+        if (nameField && nameField.value.trim() !== '') {
+            // Animation de succès
+            this.style.background = 'linear-gradient(90deg, #00ff00, #00cc00)';
+            this.style.transform = 'scale(1.05)';
+            
+            // Créer une popup de confirmation
+            const popup = document.createElement('div');
+            popup.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: white;
+                padding: 30px;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                z-index: 2000;
+                text-align: center;
+                min-width: 300px;
+                border: 4px solid #48bb78;
+            `;
+            
+            popup.innerHTML = `
+                <h2 style="color: #2d3748; margin-bottom: 20px;">✅ Formulaire Validé !</h2>
+                <div style="font-size: 18px; margin-bottom: 15px;">
+                    <strong>Nom saisi :</strong><br>
+                    <span style="color: #48bb78; font-size: 22px; font-weight: bold;">${nameField.value}</span>
+                </div>
+                <div style="font-size: 16px; margin-bottom: 25px; color: #4a5568;">
+                    Niveau atteint : <strong>${currentLevel}</strong><br>
+                    Score : <strong>${nameField.value.length * currentLevel}</strong> points
+                </div>
+                <button id="close-popup" style="
+                    padding: 10px 25px;
+                    background: #4299e1;
+                    color: white;
+                    border: none;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-size: 16px;
+                    font-weight: bold;
+                ">Fermer</button>
+            `;
+            
+            // Overlay
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.7);
+                z-index: 1999;
+            `;
+            
+            document.body.appendChild(overlay);
+            document.body.appendChild(popup);
+            
+            // Bouton fermer
+            document.getElementById('close-popup').addEventListener('click', function() {
+                document.body.removeChild(popup);
+                document.body.removeChild(overlay);
+                validateButton.style.background = 'linear-gradient(90deg, #48bb78, #38a169)';
+                validateButton.style.transform = 'scale(1)';
+            });
+            
+            // Fermer en cliquant sur l'overlay
+            overlay.addEventListener('click', function() {
+                document.body.removeChild(popup);
+                document.body.removeChild(overlay);
+                validateButton.style.background = 'linear-gradient(90deg, #48bb78, #38a169)';
+                validateButton.style.transform = 'scale(1)';
+            });
+            
+            showNotification('Formulaire validé avec succès !', 'success');
+            
+        } else {
+            showNotification('❌ Le champ "Nom" est vide !', 'error');
+            this.style.background = 'linear-gradient(90deg, #f56565, #e53e3e)';
+            setTimeout(() => {
+                this.style.background = 'linear-gradient(90deg, #48bb78, #38a169)';
+            }, 500);
+        }
+    });
+    
+    // AJOUTER LES BOUTONS (SANS "FORCER LE FOCUS")
     controlsContainer.appendChild(toggleButton);
-    controlsContainer.appendChild(deleteButton); // AJOUTÉ
+    controlsContainer.appendChild(deleteButton);
     controlsContainer.appendChild(resetButton);
+    controlsContainer.appendChild(validateButton);
     lettersContainer.insertAdjacentElement('afterend', controlsContainer);
     
-    // Instructions
+    // Instructions (MISE À JOUR SANS "FORCER LE FOCUS")
     const instructions = document.createElement('div');
     instructions.style.cssText = `
         text-align: center;
@@ -954,50 +1055,48 @@ document.addEventListener('DOMContentLoaded', function() {
     
     instructions.innerHTML = `
         <strong style="color: #2d3748; font-size: 16px; display: block; margin-bottom: 15px;">
-            ⚡ SYSTÈME COMPLET - INSERTION/SUPPRESSION
+            🎮 MODE DE JEU - CHAMP AUTO-ACTIVÉ
         </strong>
         
         <div style="text-align: left; display: inline-block;">
-            <div style="margin-bottom: 10px; padding: 10px; background: white; border-radius: 6px; border-left: 4px solid #00b894;">
-                <strong style="color: #00b894;">➕ INSÉRER :</strong> Cliquez sur une lettre → niveau suivant
+            <div style="margin-bottom: 10px; padding: 10px; background: white; border-radius: 6px; border-left: 4px solid #4299e1;">
+                <strong style="color: #4299e1;">1. ÉCRITURE :</strong> Cliquez sur les lettres → elles s'ajoutent automatiquement (+1 niveau)
             </div>
             
             <div style="margin-bottom: 10px; padding: 10px; background: white; border-radius: 6px; border-left: 4px solid #ed8936;">
-                <strong style="color: #ed8936;">➖ SUPPRIMER :</strong> 
-                <ul style="margin: 5px 0 0 20px; padding: 0;">
-                    <li>Appuyez sur <strong>Backspace</strong> ou <strong>Delete</strong></li>
-                    <li>OU cliquez sur <button style="padding: 4px 8px; background: #ed8936; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">⌫ Supprimer lettre</button></li>
-                </ul>
-                → retour au niveau précédent
+                <strong style="color: #ed8936;">2. SUPPRESSION :</strong> <button style="padding: 4px 8px; background: #ed8936; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">⌫ Supprimer lettre</button> → -1 niveau
             </div>
             
-            <div style="margin-bottom: 10px; padding: 10px; background: white; border-radius: 6px; border-left: 4px solid #4299e1;">
-                <strong style="color: #4299e1;">📈 PROGRESSION :</strong>
-                <ul style="margin: 5px 0 0 20px; padding: 0;">
-                    <li>Chaque lettre insérée = +1 niveau</li>
-                    <li>Chaque lettre supprimée = -1 niveau</li>
-                    <li>Vitesse et cafards s'adaptent</li>
-                </ul>
+            <div style="margin-bottom: 10px; padding: 10px; background: white; border-radius: 6px; border-left: 4px solid #48bb78;">
+                <strong style="color: #48bb78;">3. VALIDATION :</strong> <button style="padding: 4px 8px; background: #48bb78; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">✅ Valider le formulaire</button>
+            </div>
+            
+            <div style="margin-bottom: 10px; padding: 10px; background: white; border-radius: 6px; border-left: 4px solid #f56565;">
+                <strong style="color: #f56565;">4. RECOMMENCER :</strong> <button style="padding: 4px 8px; background: #f56565; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">🔄 Recommencer</button> pour tout effacer
+            </div>
+            
+            <div style="margin-bottom: 10px; padding: 10px; background: white; border-radius: 6px; border-left: 4px solid #4a5568;">
+                <strong style="color: #4a5568;">5. PAUSE :</strong> <button style="padding: 4px 8px; background: #4a5568; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">⏸️ Pause</button> pour geler l'animation
             </div>
             
             <div style="margin-top: 15px; padding: 12px; background: #fff5f5; border-radius: 6px; border-left: 4px solid #ff0000;">
-                <strong>🎯 STRATÉGIE :</strong> Gérer votre progression ! Montez en niveau pour le défi, 
-                descendez si c'est trop difficile. Les cafards cachent les lettres aux niveaux élevés.
+                <strong>💡 ASTUCE :</strong> Le champ est activé automatiquement. Commencez directement à cliquer sur les lettres !
             </div>
         </div>
     `;
     
     controlsContainer.insertAdjacentElement('afterend', instructions);
     
-    // Sélection auto au démarrage
+    // AUTO-FOCUS au démarrage et notification
     setTimeout(() => {
-        const firstInput = document.querySelector('input[type="text"]');
-        if (firstInput) {
-            firstInput.focus();
-            activeField = firstInput;
-            lastActiveField = firstInput;
-            updateFieldStyle(firstInput, true);
+        const nameField = document.getElementById('name');
+        if (nameField) {
+            nameField.focus();
+            activeField = nameField;
+            lastActiveField = nameField;
+            updateFieldStyle(nameField, true);
             updateLevelDisplay();
+            showNotification('Prêt ! Champ "Nom" auto-activé. Cliquez sur les lettres.', 'info');
         }
     }, 500);
     
