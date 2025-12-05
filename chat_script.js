@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             setTimeout(() => {
                 alert(`Inscription réussie !\n\nVotre séquence : ${selectedActions.join(' → ')}\n\nN'oubliez pas cet ordre pour vous connecter !`);
-                window.location.href = 'index.html';
+                window.location.href = 'chat_index.html';
             }, 1000);
         });
     }
