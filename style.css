@@ -817,3 +817,69 @@ progress::-webkit-progress-value {
         --text-secondary: #e2e8f0; 
     } 
 }
+
+/* Style pour la section Femmes en Tech */
+#women-in-tech-section {
+    text-align: center;
+    padding: 20px;
+}
+
+#women-in-tech-section h2 {
+    margin-bottom: 20px;
+    color: #d6cece;
+}
+
+#women-in-tech-section p {
+    max-width: 800px;
+    margin: 0 auto 30px;
+    line-height: 1.6;
+}
+
+/* Conteneur média centré */
+.media-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* Conteneur vidéo centré */
+.video-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.video-container video {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Conteneur flyer centré */
+.flyer-container {
+    text-align: center;
+}
+
+.flyer-download {
+    margin-top: 15px;
+}
+
+.flyer-download a {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #3498db;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.flyer-download a:hover {
+    background-color: #2980b9;
+}
