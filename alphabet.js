@@ -928,7 +928,7 @@ document.addEventListener('DOMContentLoaded', function() {
         showNotification('Jeu réinitialisé ! Champ vidé.', 'info');
     });
     
-    // BOUTON VALIDER
+  // BOUTON VALIDER
     const validateButton = document.createElement('button');
     validateButton.textContent = '✅ Valider le formulaire';
     validateButton.style.cssText = `
@@ -943,92 +943,39 @@ document.addEventListener('DOMContentLoaded', function() {
         box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         transition: all 0.3s;
     `;
-    
+
     validateButton.addEventListener('click', function() {
         const nameField = document.getElementById('name');
+        
         if (nameField && nameField.value.trim() !== '') {
-            // Animation de succès
-            this.style.background = 'linear-gradient(90deg, #00ff00, #00cc00)';
-            this.style.transform = 'scale(1.05)';
+            // Afficher notification
+            showNotification('Envoi en cours...', 'success');
             
-            // Créer une popup de confirmation
-            const popup = document.createElement('div');
-            popup.style.cssText = `
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: white;
-                padding: 30px;
-                border-radius: 15px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-                z-index: 2000;
-                text-align: center;
-                min-width: 300px;
-                border: 4px solid #48bb78;
-            `;
+            // Créer formulaire caché
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = 'enregistrer.php';
+            form.style.display = 'none';
             
-            popup.innerHTML = `
-                <h2 style="color: #2d3748; margin-bottom: 20px;">✅ Formulaire Validé !</h2>
-                <div style="font-size: 18px; margin-bottom: 15px;">
-                    <strong>Nom saisi :</strong><br>
-                    <span style="color: #48bb78; font-size: 22px; font-weight: bold;">${nameField.value}</span>
-                </div>
-                <div style="font-size: 16px; margin-bottom: 25px; color: #4a5568;">
-                    Niveau atteint : <strong>${currentLevel}</strong><br>
-                    Score : <strong>${nameField.value.length * currentLevel}</strong> points
-                </div>
-                <button id="close-popup" style="
-                    padding: 10px 25px;
-                    background: #4299e1;
-                    color: white;
-                    border: none;
-                    border-radius: 6px;
-                    cursor: pointer;
-                    font-size: 16px;
-                    font-weight: bold;
-                ">Fermer</button>
-            `;
+            const inputNom = document.createElement('input');
+            inputNom.type = 'hidden';
+            inputNom.name = 'nom_ordinateur';
+            inputNom.value = nameField.value;
             
-            // Overlay
-            const overlay = document.createElement('div');
-            overlay.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0,0,0,0.7);
-                z-index: 1999;
-            `;
+            const inputNiveau = document.createElement('input');
+            inputNiveau.type = 'hidden';
+            inputNiveau.name = 'niveau_actuel';
+            inputNiveau.value = currentLevel;
             
-            document.body.appendChild(overlay);
-            document.body.appendChild(popup);
+            form.appendChild(inputNom);
+            form.appendChild(inputNiveau);
+            document.body.appendChild(form);
             
-            // Bouton fermer
-            document.getElementById('close-popup').addEventListener('click', function() {
-                document.body.removeChild(popup);
-                document.body.removeChild(overlay);
-                validateButton.style.background = 'linear-gradient(90deg, #48bb78, #38a169)';
-                validateButton.style.transform = 'scale(1)';
-            });
-            
-            // Fermer en cliquant sur l'overlay
-            overlay.addEventListener('click', function() {
-                document.body.removeChild(popup);
-                document.body.removeChild(overlay);
-                validateButton.style.background = 'linear-gradient(90deg, #48bb78, #38a169)';
-                validateButton.style.transform = 'scale(1)';
-            });
-            
-            showNotification('Formulaire validé avec succès !', 'success');
+            // Soumettre le formulaire
+            form.submit();
             
         } else {
             showNotification('❌ Le champ "Nom" est vide !', 'error');
-            this.style.background = 'linear-gradient(90deg, #f56565, #e53e3e)';
-            setTimeout(() => {
-                this.style.background = 'linear-gradient(90deg, #48bb78, #38a169)';
-            }, 500);
         }
     });
     
