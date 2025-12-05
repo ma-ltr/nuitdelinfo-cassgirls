@@ -1,8 +1,4 @@
-// ============================
-// SCÉNARIO COMPLET
-// ============================
 
-// Remplacez TOUT le scénario dans script.js par :
 
 const story = {
     "start": {
@@ -284,8 +280,21 @@ function startGame() {
 }
 
 function restartGame() {
-    console.log("🔄 Redémarrage du jeu");
-    startGame();
+   console.log("🔄 Retour à l'écran titre");
+    
+    // Cacher l'écran de fin
+    document.getElementById('end-screen').classList.add('hidden');
+    
+    // Cacher l'écran de jeu
+    document.getElementById('game-screen').classList.add('hidden');
+    
+    // Afficher l'écran titre
+    document.getElementById('title-screen').classList.remove('hidden');
+    
+    // Réinitialiser les statistiques (optionnel)
+    document.getElementById('autonomy').value = 30;
+    document.getElementById('durability').value = 30;
+    document.getElementById('inclusion').value = 30;
 }
 
 // ============================
@@ -343,7 +352,7 @@ function loadScene(sceneId) {
             if (backBtn) backBtn.style.display = 'none';
             
             if (scene.isEnd) {
-                setTimeout(() => showEndScreen(scene), 1500);
+                setTimeout(() => showEndScreen(scene), 7000);
             }
         }
     }
