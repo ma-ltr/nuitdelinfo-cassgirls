@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - Chat Capricieux</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-cat"></i> Contentons le chat !</h1>
+            <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Retour</a>
+        </header>
+
+        <div class="connexion-container">
+            <div class="login-form">
+                <h2><i class="fas fa-sign-in-alt"></i> Identifiez-vous d'abord</h2>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-username"><i class="fas fa-user-tag"></i> Nom d'utilisateur</label>
+                        <input type="text" id="login-username" name="username" required>
+                    </div>
+                    <button type="submit" class="btn-login">
+                        <i class="fas fa-paw"></i> Aller voir le chat
+                    </button>
+                </form>
+            </div>
+
+            <div class="game-section" id="game-section" style="display: none;">
+                <div class="cat-game-container">
+                    <div class="cat-game-header">
+                        <h2 id="greeting"></h2>
+                        <div class="patience-meter">
+                            <span>Patience du chat : </span>
+                            <div class="meter">
+                                <div class="meter-fill" id="patience-meter"></div>
+                            </div>
+                            <span id="patience-text">100%</span>
+                        </div>
+                        <div class="attempts">
+                            Tentatives restantes : <span id="attempts-count">3</span>
+                        </div>
+                    </div>
+
+                    <div class="cat-game-area">
+                        <div class="game-cat-container">
+                            <div class="cat" id="game-cat">
+                                <div class="cat-ear left-ear"></div>
+                                <div class="cat-ear right-ear"></div>
+                                <div class="cat-face">
+                                    <div class="cat-eye left-eye"></div>
+                                    <div class="cat-eye right-eye"></div>
+                                    <div class="cat-nose"></div>
+                                    <div class="cat-mouth"></div>
+                                </div>
+                                <div class="cat-tail"></div>
+                            </div>
+                            <div class="cat-speech" id="game-speech">
+                                Miaou ? Qui es-tu ?
+                            </div>
+                        </div>
+
+                        <div class="actions-available">
+                            <h3><i class="fas fa-hand-point-right"></i> Actions disponibles :</h3>
+                            <div class="actions-buttons" id="actions-buttons">
+                                <!-- Les boutons seront générés par JavaScript -->
+                            </div>
+                            <div class="sequence-display">
+                                <h3>Actions réalisées :</h3>
+                                <div class="sequence-list" id="sequence-list">
+                                    <p class="empty">Aucune action encore</p>
+                                </div>
+                                <div class="sequence-controls">
+                                    <button id="validate-sequence" class="btn-validate">
+                                        <i class="fas fa-check"></i> Vérifier la séquence
+                                    </button>
+                                    <button id="reset-sequence" class="btn-reset">
+                                        <i class="fas fa-redo"></i> Recommencer
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="game-feedback" id="game-feedback">
+                        <!-- Les messages de feedback apparaîtront ici -->
+                    </div>
+
+                    <div class="game-instructions">
+                        <h3><i class="fas fa-lightbulb"></i> Instructions :</h3>
+                        <p>1. Cliquez sur les actions dans l'ordre qui rend votre chat heureux</p>
+                        <p>2. Attention ! Le chat s'énerve si vous vous trompez</p>
+                        <p>3. Vous avez 3 tentatives avant que le chat ne s'en aille</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="success-section" id="success-section" style="display: none;">
+                <div class="success-animation">
+                    <i class="fas fa-trophy"></i>
+                    <h2>Félicitations ! 🎉</h2>
+                    <p id="success-message"></p>
+                    <div class="happy-cat">
+                        <i class="fas fa-cat fa-5x"></i>
+                        <i class="fas fa-heart fa-2x heart"></i>
+                    </div>
+                    <button id="go-to-dashboard" class="btn-dashboard">
+                        <i class="fas fa-home"></i> Accéder à l'application
+                    </button>
+                </div>
+            </div>
+
+            <div class="failure-section" id="failure-section" style="display: none;">
+                <div class="failure-animation">
+                    <i class="fas fa-skull-crossbones"></i>
+                    <h2>Oh non ! Le chat est parti... 😾</h2>
+                    <p>Vous avez épuisé toutes vos tentatives.</p>
+                    <div class="angry-cat">
+                        <i class="fas fa-cat fa-5x angry"></i>
+                        <i class="fas fa-poop fa-2x poop"></i>
+                    </div>
+                    <button id="try-again" class="btn-try-again">
+                        <i class="fas fa-redo"></i> Réessayer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

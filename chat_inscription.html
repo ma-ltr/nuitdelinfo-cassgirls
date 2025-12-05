@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription - Chat Capricieux</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-cat"></i> Création de votre profil chat</h1>
+            <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Retour</a>
+        </header>
+
+        <div class="inscription-container">
+            <div class="form-section">
+                <h2><i class="fas fa-user"></i> Vos informations</h2>
+                <form id="inscription-form">
+                    <div class="form-group">
+                        <label for="username"><i class="fas fa-user-tag"></i> Nom d'utilisateur</label>
+                        <input type="text" id="username" name="username" required 
+                               placeholder="Ex: ChatLover42">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" id="email" name="email" required 
+                               placeholder="votre@email.com">
+                    </div>
+                </form>
+            </div>
+
+            <div class="cat-section">
+                <div class="cat-container">
+                    <div class="cat" id="inscription-cat">
+                        <div class="cat-ear left-ear"></div>
+                        <div class="cat-ear right-ear"></div>
+                        <div class="cat-face">
+                            <div class="cat-eye left-eye"></div>
+                            <div class="cat-eye right-eye"></div>
+                            <div class="cat-nose"></div>
+                            <div class="cat-mouth"></div>
+                        </div>
+                        <div class="cat-tail"></div>
+                    </div>
+                </div>
+                <div class="cat-mood" id="cat-mood">
+                    <p><i class="fas fa-meh"></i> Hmm... montre-moi ce que tu as...</p>
+                </div>
+            </div>
+
+            <div class="actions-section">
+                <h2><i class="fas fa-paw"></i> Choisissez ce qui rend VOTRE chat heureux</h2>
+                <p class="instruction">Sélectionnez 3 actions et définissez l'ordre dans lequel il faut les faire</p>
+
+                <div class="actions-grid">
+                    <div class="action-card" data-action="câlin">
+                        <div class="action-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <h3>Câlin</h3>
+                        <p>Des caresses derrière les oreilles</p>
+                        <button type="button" class="btn-select" data-action="câlin">Sélectionner</button>
+                    </div>
+
+                    <div class="action-card" data-action="nourriture">
+                        <div class="action-icon">
+                            <i class="fas fa-fish"></i>
+                        </div>
+                        <h3>Nourriture</h3>
+                        <p>Un petit poisson ou croquette</p>
+                        <button type="button" class="btn-select" data-action="nourriture">Sélectionner</button>
+                    </div>
+
+                    <div class="action-card" data-action="jeu">
+                        <div class="action-icon">
+                            <i class="fas fa-basketball"></i>
+                        </div>
+                        <h3>Jeu</h3>
+                        <p>Jouer avec une balle de laine</p>
+                        <button type="button" class="btn-select" data-action="jeu">Sélectionner</button>
+                    </div>
+
+                    <div class="action-card" data-action="dodo">
+                        <div class="action-icon">
+                            <i class="fas fa-bed"></i>
+                        </div>
+                        <h3>Dodo</h3>
+                        <p>Un coussin moelleux pour dormir</p>
+                        <button type="button" class="btn-select" data-action="dodo">Sélectionner</button>
+                    </div>
+
+                    <div class="action-card" data-action="griffoir">
+                        <div class="action-icon">
+                            <i class="fas fa-tree"></i>
+                        </div>
+                        <h3>Griffoir</h3>
+                        <p>Faire ses griffes</p>
+                        <button type="button" class="btn-select" data-action="griffoir">Sélectionner</button>
+                    </div>
+
+                    <div class="action-card" data-action="observatoire">
+                        <div class="action-icon">
+                            <i class="fas fa-window-maximize"></i>
+                        </div>
+                        <h3>Observatoire</h3>
+                        <p>Regarder les oiseaux</p>
+                        <button type="button" class="btn-select" data-action="observatoire">Sélectionner</button>
+                    </div>
+                </div>
+
+                <div class="selected-actions">
+                    <h3><i class="fas fa-list-ol"></i> Ordre des actions sélectionnées :</h3>
+                    <div id="selected-list" class="selected-list">
+                        <p class="empty-message">Aucune action sélectionnée</p>
+                    </div>
+                    <div class="order-buttons">
+                        <button id="clear-order" class="btn-clear">Effacer l'ordre</button>
+                        <button id="test-order" class="btn-test">Tester cet ordre</button>
+                    </div>
+                </div>
+
+                <div class="form-footer">
+                    <button type="submit" form="inscription-form" class="btn-submit">
+                        <i class="fas fa-cat"></i> Créer mon compte chat
+                    </button>
+                    <p class="note"><i class="fas fa-info-circle"></i> Vous devrez reproduire cet ordre exact à chaque connexion</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
