@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Formulaire avec Clavier Virtuel</title>
+    <style>
+        /* Styles supplémentaires pour améliorer l'interface */
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+        }
+        
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        
+        .keyboard-title {
+            margin: 25px 0 10px 0;
+            color: #333;
+            font-size: 18px;
+        }
+    </style>
+    <script src="alphabet.js" defer></script>
+</head>
+
+<body>
+    <h1>Formulaire avec Clavier Virtuel</h1>
+    
+    <table>
+        <tr>
+            <th>Champs</th>
+            <th>À remplir</th>
+        </tr>
+        <tr>
+            <td><label for="name">Nom</label></td>
+            <td><input type="text" name="name" id="name"/></td>
+        </tr>
+        <tr>
+            <td><label for="mdp">Mot de passe</label></td>
+            <td><input type="password" name="mdp" id="mdp"/></td>
+        </tr>
+    </table>
+
+</body>
+</html>
